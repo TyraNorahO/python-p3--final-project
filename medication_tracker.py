@@ -9,8 +9,10 @@ def create_tables():
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS user(
                       id INTEGER PRIMARY KEY AUTOINCREMENT,
-        create_tables()              Name TEXT NOT NULL
+                      Name TEXT NOT NULL
     )''')
+
+    
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS medication (
                       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,8 +35,6 @@ def create_tables():
 
 
 create_tables()
-
-
 class MedicationTrackerDB:
     def __init__(self):
         self.connection = sqlite3.connect('medicationtracker.db')
