@@ -1,7 +1,7 @@
 # lib/cli.py
 import sqlite3
 import datetime
-
+from reminder import ReminderManager  # Import the ReminderManager class
 
 def create_tables():
     connection = sqlite3.connect("medicationtracker.db")
@@ -9,8 +9,8 @@ def create_tables():
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS user(
                       id INTEGER PRIMARY KEY AUTOINCREMENT,
-        create_tables()              Name TEXT NOT NULL
-    )''')
+                      Name TEXT NOT NULL
+                    )''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS medication (
                       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -18,22 +18,19 @@ def create_tables():
                       Dosage TEXT NOT NULL,
                       user_id INTEGER,
                       FOREIGN KEY (user_id) REFERENCES user(id)
-    )''')
+                    )''')
 
-   
     cursor.execute('''CREATE TABLE IF NOT EXISTS schedule (
                       id INTEGER PRIMARY KEY AUTOINCREMENT,
                       user_id INTEGER,
                       time TEXT NOT NULL,
                       FOREIGN KEY (user_id) REFERENCES user(id)
-    )''')
+                    )''')
 
     connection.commit()
     connection.close()
 
-
 create_tables()
-
 
 class MedicationTrackerDB:
     def __init__(self):
@@ -77,6 +74,7 @@ class MedicationTrackerDB:
 
 def main():
     db = MedicationTrackerDB()
+    reminder_manager = ReminderManager()  # Create an instance of ReminderManager
     
     while True:
         menu()
@@ -84,6 +82,7 @@ def main():
         
         if choice == "0":
             db.close()
+            reminder_manager.close()
             print("Exiting the program.")
             break
         elif choice == "1":
@@ -103,6 +102,16 @@ def main():
             db.delete_schedule(schedule_id)
         elif choice == "5":
             db.view_medication()
+        elif choice == "6":
+            reminder_manager.view_reminders()
+        elif choice == "7":
+            medication_id = int(input("Enter medication ID: "))
+            reminder_time = input("Enter reminder time (YYYY-MM-DD HH:MM): ")
+            message = input("Enter reminder message: ")
+            reminder_manager.add_reminder(medication_id, reminder_time, message)
+        elif choice == "8":
+            reminder_id = int(input("Enter reminder ID to delete: "))
+            reminder_manager.delete_reminder(reminder_id)
         else:
             print("Invalid choice. Please try again.")
 
@@ -114,6 +123,9 @@ def menu():
     print("3. Delete medication")
     print("4. Delete schedule")
     print("5. View all medications")
+    print("6. View all reminders")
+    print("7. Add reminder")
+    print("8. Delete reminder")
 
 if __name__ == "__main__":
     main()
