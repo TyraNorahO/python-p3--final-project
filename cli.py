@@ -1,7 +1,8 @@
 # lib/cli.py
 import sqlite3
 import datetime
-from reminder import ReminderManager  # Import the ReminderManager class
+from reminder import ReminderManager
+from schedule import ScheduleManager  # Assuming ScheduleManager is defined in schedule.py
 
 def create_tables():
     connection = sqlite3.connect("medicationtracker.db")
@@ -74,7 +75,8 @@ class MedicationTrackerDB:
 
 def main():
     db = MedicationTrackerDB()
-    reminder_manager = ReminderManager()  # Create an instance of ReminderManager
+    reminder_manager = ReminderManager()  # Example ReminderManager
+    schedule_manager = ScheduleManager()  # Instantiate ScheduleManager
     
     while True:
         menu()
@@ -83,6 +85,7 @@ def main():
         if choice == "0":
             db.close()
             reminder_manager.close()
+            schedule_manager.close()  # Close ScheduleManager
             print("Exiting the program.")
             break
         elif choice == "1":
@@ -93,13 +96,13 @@ def main():
         elif choice == "2":
             user_id = int(input("Enter user ID: "))
             time = input("Enter schedule time (YYYY-MM-DD HH:MM): ")
-            db.add_schedule(user_id, time)
+            schedule_manager.add_schedule(user_id, time)  # Add schedule via ScheduleManager
         elif choice == "3":
             med_id = int(input("Enter medication ID to delete: "))
             db.delete_medication(med_id)
         elif choice == "4":
             schedule_id = int(input("Enter schedule ID to delete: "))
-            db.delete_schedule(schedule_id)
+            schedule_manager.delete_schedule(schedule_id)  # Delete schedule via ScheduleManager
         elif choice == "5":
             db.view_medication()
         elif choice == "6":
@@ -112,6 +115,8 @@ def main():
         elif choice == "8":
             reminder_id = int(input("Enter reminder ID to delete: "))
             reminder_manager.delete_reminder(reminder_id)
+        elif choice == "9":
+            schedule_manager.view_schedules()  # View schedules via ScheduleManager
         else:
             print("Invalid choice. Please try again.")
 
@@ -126,6 +131,7 @@ def menu():
     print("6. View all reminders")
     print("7. Add reminder")
     print("8. Delete reminder")
+    print("9. View all schedules")  # Option to view all schedules
 
 if __name__ == "__main__":
     main()
