@@ -2,7 +2,7 @@
 
 #### Date, 2024/06/13
 
-#### By *TYRA NORAH OTIENO
+#### By TYRA NORAH OTIENO
 
 ## Description
 

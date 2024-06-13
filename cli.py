@@ -1,8 +1,9 @@
 # lib/cli.py
 import sqlite3
 import datetime
-from reminder import ReminderManager
-from schedule import ScheduleManager 
+from models.reminder import ReminderManager
+from models.schedule import ScheduleManager
+from models.medication_tracker import MedicationTrackerDB
 
 def create_tables():
     connection = sqlite3.connect("medicationtracker.db")
