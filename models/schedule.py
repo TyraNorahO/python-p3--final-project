@@ -46,6 +46,46 @@ class ScheduleManager:
         except sqlite3.Error as e:
             print(f"An error occurred: {e}")
 
+    def update_schedule(self, schedule_id, new_time):
+        try:
+            parsed_time = datetime.datetime.strptime(new_time, '%Y-%m-%d %H:%M')
+            self.cursor.execute('UPDATE schedule SET time = ? WHERE id = ?', 
+                                (parsed_time, schedule_id))
+            self.connection.commit()
+            print(f"Updated schedule ID: {schedule_id} to new time: {parsed_time}")
+        except ValueError:
+            print("Invalid date format. Please use 'YYYY-MM-DD HH:MM'")
+        except sqlite3.Error as e:
+            print(f"An error occurred: {e}")
+
+    def find_schedule(self, user_id=None, time=None):
+        try:
+            if user_id is not None and time is not None:
+                parsed_time = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M')
+                self.cursor.execute('SELECT * FROM schedule WHERE user_id = ? AND time = ?', 
+                                    (user_id, parsed_time))
+            elif user_id is not None:
+                self.cursor.execute('SELECT * FROM schedule WHERE user_id = ?', (user_id,))
+            elif time is not None:
+                parsed_time = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M')
+                self.cursor.execute('SELECT * FROM schedule WHERE time = ?', (parsed_time,))
+            else:
+                print("Please provide at least one search criterion: user_id or time.")
+                return []
+
+            schedules = self.cursor.fetchall()
+            if schedules:
+                for schedule in schedules:
+                    print(f"Schedule ID: {schedule[0]}, User ID: {schedule[1]}, Time: {schedule[2]}")
+            else:
+                print("No schedules found with the given criteria.")
+            return schedules
+        except ValueError:
+            print("Invalid date format. Please use 'YYYY-MM-DD HH:MM'")
+        except sqlite3.Error as e:
+            print(f"An error occurred: {e}")
+            return []
+
     def close(self):
         self.connection.close()
 
@@ -54,6 +94,8 @@ if __name__ == "__main__":
     # Example usage
     manager.add_schedule(1, '2024-12-25 09:00')
     manager.view_schedules()
+    manager.update_schedule(1, '2024-12-25 10:00')
+    manager.find_schedule(user_id=1)
     manager.delete_schedule(1)
     manager.view_schedules()
     manager.close()
