@@ -57,3 +57,4 @@ if __name__ == "__main__":
     manager.delete_reminder(1)
     manager.view_reminders()
     manager.close()
+    

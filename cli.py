@@ -2,7 +2,7 @@
 import sqlite3
 import datetime
 from reminder import ReminderManager
-from schedule import ScheduleManager  # Assuming ScheduleManager is defined in schedule.py
+from schedule import ScheduleManager 
 
 def create_tables():
     connection = sqlite3.connect("medicationtracker.db")
