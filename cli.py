@@ -28,6 +28,14 @@ def create_tables():
                       time TEXT NOT NULL,
                       FOREIGN KEY (user_id) REFERENCES user(id)
                     )''')
+    
+    cursor.execute('''CREATE TABLE IF NOT EXISTS reminder (
+                               id INTEGER PRIMARY KEY AUTOINCREMENT,
+                               medication_id INTEGER,
+                               time TEXT NOT NULL,
+                               message TEXT,
+                               FOREIGN KEY (medication_id) REFERENCES medication(id)
+                            )''')
 
     connection.commit()
     connection.close()
@@ -130,20 +138,6 @@ class ScheduleManager:
 
     def close(self):
         self.connection.close()
-
-class ReminderManager:
-    def __init__(self):
-        self.connection = sqlite3.connect('medicationtracker.db')
-        self.cursor = self.connection.cursor()
-
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS reminder (
-                               id INTEGER PRIMARY KEY AUTOINCREMENT,
-                               medication_id INTEGER,
-                               time TEXT NOT NULL,
-                               message TEXT,
-                               FOREIGN KEY (medication_id) REFERENCES medication(id)
-                            )''')
-        self.connection.commit()
 
     def add_reminder(self, medication_id, time, message):
         try:
@@ -297,4 +291,4 @@ def menu():
     print("15. Find reminder")
 
 if __name__ == "__main__":
-    main()
+    main()    

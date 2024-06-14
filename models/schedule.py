@@ -6,17 +6,7 @@ class ScheduleManager:
     def __init__(self):
         self.connection = sqlite3.connect('schedule.db')
         self.cursor = self.connection.cursor()
-        self.create_schedule_table()
-
-    def create_schedule_table(self):
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS schedule (
-                                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                user_id INTEGER,
-                                time TEXT NOT NULL,
-                                FOREIGN KEY (user_id) REFERENCES user(id)
-                              )''')
-        self.connection.commit()
-
+        
     def add_schedule(self, user_id, schedule_time):
         try:
             parsed_time = datetime.datetime.strptime(schedule_time, '%Y-%m-%d %H:%M')
